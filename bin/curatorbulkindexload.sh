@@ -79,7 +79,7 @@ fi
 # the last time the load was run for this input file. If this file exists
 # and is more recent than the input file, the load does not need to be run.
 #
-LASTRUN_FILE=${INPUTDIR}/lastruncreate
+LASTRUN_FILE=${INPUTDIR}/lastrun
 if [ -f ${LASTRUN_FILE} ]
 then
     if test ${LASTRUN_FILE} -nt ${INPUT_FILE_DEFAULT}
@@ -93,10 +93,10 @@ then
     fi
 fi
 
-echo "Running strain/curator/create load" | tee -a ${LOG_DIAG}
+echo "Running curator bulk index load" | tee -a ${LOG_DIAG}
 ${PYTHON} ${CURATORSTRAINLOAD}/bin/curatorbulkload.py ${INPUT_FILE_DEFAULT} load | tee -a ${LOG_DIAG}
 STAT=$?
-checkStatus ${STAT} "curatorstrainload.py"
+checkStatus ${STAT} "curatorbulkindexload.py"
 
 #
 # Touch the "lastrun" file to note when the load was run.
