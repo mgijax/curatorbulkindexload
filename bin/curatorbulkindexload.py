@@ -166,29 +166,50 @@ def verifyObject(
     assocTypeKey = 0
 
     results = db.sql('''
-    select _object_key, _mgitype_key from ACC_Accession where _mgitype_key in (2,10,11) and preferred = 1 and accid = \'%s\'
-    ''' % (mgiid), 'auto')
+    select a._object_key, a._mgitype_key from ACC_Accession  a, MRK_Marker aa
+    where a._logicaldb_key = 1
+    and a._mgitype_key in (2) 
+    and a.preferred = 1 
+    and a.accid = \'%s\'
+    and a._object_key = aa._Marker_key
+    and aa._marker_status_key = 1
+    union
+    select a._object_key, a._mgitype_key from ACC_Accession a, PRB_Strain aa
+    where a._logicaldb_key = 1
+    and a._mgitype_key in (10) 
+    and a.preferred = 1 
+    and a.accid = \'%s\'
+    and a._object_key = aa._strain_key
+    and aa.private = 0
+    union
+    select a._object_key, a._mgitype_key from ACC_Accession a, ALL_Allele aa
+    where a._logicaldb_key = 1
+    and a._mgitype_key in (11) 
+    and a.preferred = 1 
+    and a.accid = \'%s\'
+    and a._object_key = aa._allele_key
+    and aa._allele_type_key in (847114, 3983021)
+    ''' % (mgiid, mgiid), 'auto')
 
     if len(results) == 0:
             errorFile.write('Invalid Object (row %d): %s\n' % (lineNum, mgiid))
+            errorFile.write('\tif Object = Allele, then must be Approved or Autoload\n')
+            errorFile.write('\tif Object = Marker, then must be Official\n')
+            errorFile.write('\tif Object = Strain, then must be public\n')
             hasFatalError += 1
     elif len(results) > 1:
             errorFile.write('Object Returns > 1 result (row %d): %s\n' % (lineNum, mgiid))
             hasFatalError += 1
     else:
+        r = results[0]
         mgitypeKey = r['_mgitype_key']
-        if mgitypeKey not in (2,10,11):
-                errorFile.write('Invalid Object MGI Type Key (row %d): %s, %s\n' % (lineNum, mgiid, mgitypekey))
-                hasFatalError += 1
-                mgitypeKey = 0
+        objectKey = r['_object_key']
+        if mgitypeKey == 2:
+                assocTypeKey = 1018
+        elif mgitypeKey == 10:
+                assocTypeKey = 1031
         else:
-                objectKey = r['_object_key']
-                if mgitypeKey == 2:
-                        assocTypeKey = 1018
-                elif mgitypeKey == 10:
-                        assocTypeKey = 1031
-                else:
-                        assocTypeKey = 1013
+                assocTypeKey = 1013
                         
     return objectKey, mgitypeKey, assocTypeKey
 
@@ -236,6 +257,10 @@ def processFile():
         refKey = loadlib.verifyReference(jnumid, lineNum, errorFile)
         createdByKey = loadlib.verifyUser(createdBy, lineNum, errorFile)
         objectKey, mgiTypeKey, assocTypeKey = verifyObject(mgiid, lineNum)
+
+        # if sanity check only, skip/continue
+        if isSanityCheck == 1:
+                continue
 
         assocFile.write('%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % \
                 (assocKey, refKey, objectKey, mgiTypeKey, assocTypeKey, createdByKey, createdByKey, loaddate, loaddate))
