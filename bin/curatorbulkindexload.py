@@ -189,13 +189,10 @@ def verifyObject(
     and a.accid = \'%s\'
     and a._object_key = aa._allele_key
     and aa._allele_type_key in (847114, 3983021)
-    ''' % (mgiid, mgiid), 'auto')
+    ''' % (mgiid, mgiid, mgiid), 'auto')
 
     if len(results) == 0:
             errorFile.write('Invalid Object (row %d): %s\n' % (lineNum, mgiid))
-            errorFile.write('\tif Object = Allele, then must be Approved or Autoload\n')
-            errorFile.write('\tif Object = Marker, then must be Official\n')
-            errorFile.write('\tif Object = Strain, then must be public\n')
             hasFatalError += 1
     elif len(results) > 1:
             errorFile.write('Object Returns > 1 result (row %d): %s\n' % (lineNum, mgiid))
@@ -235,6 +232,12 @@ def processFile():
     global lineNum
     global assocKey
     global hasFatalError, hasWarningError
+
+    errorFile.write('Note:\n')
+    errorFile.write('\tif Object = Allele, then must be Approved or Autoload\n')
+    errorFile.write('\tif Object = Marker, then must be Official\n')
+    errorFile.write('\tif Object = Strain, then must be Public\n')
+    errorFile.write('\n')
 
     # For each line in the input file
 
