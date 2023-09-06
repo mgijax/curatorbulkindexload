@@ -29,10 +29,10 @@ fi
 #
 cd `dirname $0`
 
-cp -r curatorbulkindex.config.default curatorbulkindex.config
+cp -r curatorbulkindexload.config.default curatorbulkindexload.config
 
 # establish the config files
-MAIN_CONFIG=curatorbulkindex.config
+MAIN_CONFIG=curatorbulkindexload.config
 
 # Make sure config file exists and source it
 if [ -r ${MAIN_CONFIG} ]

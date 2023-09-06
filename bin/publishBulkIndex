@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-#  publishStrainCreate
+#  publishBulkIndex
 ###########################################################################
 #
 # A copy of this script is intended to reside in /usr/local/bin on all
 # servers to make it available in the common PATH.
 #
-# Its allows someone to publish a new strain input file
-# to the directory where the strain loader will look for it.
+# Its allows someone to publish a new input file
+# to the directory where the loader will look for it.
 #
 ###########################################################################
 
@@ -21,21 +21,21 @@ fi
 
 usage ()
 {
-    echo "Usage: publishStrainCreate"
+    echo "Usage: publishBulkIndex"
     echo "       where"
-    echo "           input_file = name of the strain input file"
+    echo "           input_file = name of the input file"
     exit 1
 }
 
-CONFIG=${CURATORSTRAINLOAD}/straincreate.config
+CONFIG=${CURATORBULKINDEXLOAD}/curatorbulkindexload.config
 SOURCEFILE=$1
 
 #
 # Make sure the load product exists on this server
 #
-if [ ! -d ${CURATORSTRAINLOAD} ]
+if [ ! -d ${CURATORBULKINDEXLOAD} ]
 then
-    echo "The strain load software does not exist on this server"
+    echo "The load software does not exist on this server"
     exit 1
 fi
 

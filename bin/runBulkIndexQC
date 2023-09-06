@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  runStrainCreateQC
+#  runBulkIndexQC
 ###########################################################################
 #
 # A copy of this script is intended to reside in /usr/local/bin on all
@@ -15,22 +15,22 @@ then
 fi
 
 . ${MGICONFIG}/master.config.sh
-CONFIG=${CURATORSTRAINLOAD}/straincreate.config
+CONFIG=${CURATORBULKINDEXLOAD}/curatorbulkindexload.config
 
 usage ()
 {
-    echo "Usage: runStrainCreateQC input_file"
+    echo "Usage: runBulkIndexQC input_file"
     echo "       where"
-    echo "           input_file = path to the strain input file"
+    echo "           input_file = path to the input file"
     exit 1
 }
 
 #
 # Make sure the load product exists on this server
 #
-if [ ! -d ${CURATORSTRAINLOAD} ]
+if [ ! -d ${CURATORBULKINDEXLOAD} ]
 then
-    echo "The curatorstrainload software does not exist on this server"; exit 1
+    echo "The load software does not exist on this server"; exit 1
 fi
 
 #
@@ -63,6 +63,6 @@ fi
 # and the arguments that were passed to this script.
 #
 dos2unix $1 $1 2>/dev/null
-${PYTHON} ${CURATORSTRAINLOAD}/bin/straincreate.py $1 preview
+${PYTHON} ${CURATORBULKINDEXLOAD}/bin/curatorbulkindexload.py $1 preview
 cat $1.error
 
