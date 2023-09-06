@@ -30,6 +30,11 @@ OUTPUTDIR=${FILEDIR}/output
 ARCHIVEDIR=${FILEDIR}/archive
 export INPUTDIR FILEDIR LOGDIR RPTDIR OUTPUTDIR ARCHIVEDIR
 
+PUBLISHDIR=/data/bulkindex
+PUBLISHCURRENT=${PUBLISHDIR}/current
+PUBLISHPENDING=${PUBLISHDIR}/pending
+export PUBLISHDIR PUBLISHCURRENT PUBLISHPENDING
+
 #  Full path name of the log files
 LOG_PROC=${LOGDIR}/curatorbulkindexload.proc.log
 LOG_DIAG=${LOGDIR}/curatorbulkindexload.diag.log
