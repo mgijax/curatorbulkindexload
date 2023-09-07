@@ -94,7 +94,7 @@ then
 fi
 
 echo "Running curator bulk index load" | tee -a ${LOG_DIAG}
-${PYTHON} ${CURATORSTRAINLOAD}/bin/curatorbulkindexload.py ${INPUT_FILE_DEFAULT} load | tee -a ${LOG_DIAG}
+${PYTHON} ${CURATORBULKINDEXLOAD}/bin/curatorbulkindexload.py ${INPUT_FILE_DEFAULT} load | tee -a ${LOG_DIAG}
 STAT=$?
 checkStatus ${STAT} "curatorbulkindexload.py"
 

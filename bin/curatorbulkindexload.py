@@ -220,7 +220,7 @@ def verifyObject(
 # Throws:   nothing
 def setPrimaryKeys():
 
-    global asscoKey
+    global assocKey
 
     results = db.sql(''' select nextval('mgi_reference_assoc_seq') as maxKey ''', 'auto')
     assocKey = results[0]['maxKey']
@@ -269,7 +269,7 @@ def processFile():
                 continue
 
         assocFile.write('%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % \
-                (assocKey, refKey, objectKey, mgiTypeKey, assocTypeKey, createdByKey, createdByKey, loaddate, loaddate))
+                (assocKey, refKey, objectKey, mgiTypeKey, assocTypeKey, createdByKey, createdByKey, cdate, cdate))
 
         assocKey = assocKey + 1
 
@@ -306,11 +306,11 @@ def bcpFiles():
 
     diagFile.write('%s\n' % bcp1)
 
-    os.system(bcp1)
+    #os.system(bcp1)
 
     # update mgi_reference_assoc_seq auto-sequence
-    db.sql(''' select setval('mgi_reference_assoc_seq', (select max(_Assoc_key) from MGI_Reference_Assoc)) ''', None)
-    db.commit()
+    #db.sql(''' select setval('mgi_reference_assoc_seq', (select max(_Assoc_key) from MGI_Reference_Assoc)) ''', None)
+    #db.commit()
 
 #
 # Main
@@ -319,6 +319,6 @@ def bcpFiles():
 init()
 setPrimaryKeys()
 processFile()
-#bcpFiles()
+bcpFiles()
 exit(0)
 
