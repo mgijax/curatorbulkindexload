@@ -306,11 +306,11 @@ def bcpFiles():
 
     diagFile.write('%s\n' % bcp1)
 
-    #os.system(bcp1)
+    os.system(bcp1)
 
     # update mgi_reference_assoc_seq auto-sequence
-    #db.sql(''' select setval('mgi_reference_assoc_seq', (select max(_Assoc_key) from MGI_Reference_Assoc)) ''', None)
-    #db.commit()
+    db.sql(''' select setval('mgi_reference_assoc_seq', (select max(_Assoc_key) from MGI_Reference_Assoc)) ''', None)
+    db.commit()
 
 #
 # Main
