@@ -166,7 +166,8 @@ def verifyObject(
     assocTypeKey = 0
 
     results = db.sql('''
-    select a._object_key, a._mgitype_key from ACC_Accession  a, MRK_Marker aa
+    select a._object_key, a._mgitype_key 
+    from ACC_Accession  a, MRK_Marker aa
     where a._logicaldb_key = 1
     and a._mgitype_key in (2) 
     and a.preferred = 1 
@@ -174,7 +175,8 @@ def verifyObject(
     and a._object_key = aa._Marker_key
     and aa._marker_status_key = 1
     union
-    select a._object_key, a._mgitype_key from ACC_Accession a, PRB_Strain aa
+    select a._object_key, a._mgitype_key 
+    from ACC_Accession a, PRB_Strain aa
     where a._logicaldb_key = 1
     and a._mgitype_key in (10) 
     and a.preferred = 1 
@@ -182,13 +184,14 @@ def verifyObject(
     and a._object_key = aa._strain_key
     and aa.private = 0
     union
-    select a._object_key, a._mgitype_key from ACC_Accession a, ALL_Allele aa
+    select a._object_key, a._mgitype_key 
+    from ACC_Accession a, ALL_Allele aa
     where a._logicaldb_key = 1
     and a._mgitype_key in (11) 
     and a.preferred = 1 
     and a.accid = \'%s\'
     and a._object_key = aa._allele_key
-    and aa._allele_type_key in (847114, 3983021)
+    and aa._allele_status_key in (847114, 3983021)
     ''' % (mgiid, mgiid, mgiid), 'auto')
 
     if len(results) == 0:

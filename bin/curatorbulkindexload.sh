@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Purpose:
-#	wrapper for curatorbulkload.py
+#	wrapper for curatorbulkindexload.py
 #
 # History
 #
@@ -10,8 +10,8 @@
 #
 
 BINDIR=`dirname $0`
-COMMON_CONFIG=`cd ${BINDIR}/..; pwd`/curatorbulkload.config
-USAGE="Usage: curatorbulkload.sh"
+COMMON_CONFIG=`cd ${BINDIR}/..; pwd`/curatorbulkindexload.config
+USAGE="Usage: curatorbulkindexload.sh"
 
 #
 # Make sure the common configuration file exists and source it.
@@ -27,7 +27,7 @@ fi
 #
 # Initialize the log file.
 #
-LOG=${LOGDIR}/curatorbulkload.sh.log
+LOG=${LOGDIR}/curatorbulkindexload.sh.log
 rm -rf ${LOG}
 touch ${LOG}
 
@@ -94,7 +94,7 @@ then
 fi
 
 echo "Running curator bulk index load" | tee -a ${LOG_DIAG}
-${PYTHON} ${CURATORSTRAINLOAD}/bin/curatorbulkload.py ${INPUT_FILE_DEFAULT} load | tee -a ${LOG_DIAG}
+${PYTHON} ${CURATORSTRAINLOAD}/bin/curatorbulkindexload.py ${INPUT_FILE_DEFAULT} load | tee -a ${LOG_DIAG}
 STAT=$?
 checkStatus ${STAT} "curatorbulkindexload.py"
 
