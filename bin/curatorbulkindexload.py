@@ -5,7 +5,7 @@
 #
 #	A tab-delimited file in the format:
 #	field 1: J:
-#	field 2: MGI ID (allele, marker, strain)
+#	field 2: MGI ID (allele, marker, strain) or DOID (disease associations)
 #	field 3: Modified By
 #
 # Outputs:
@@ -18,6 +18,9 @@
 #       Error file
 #
 # History
+#
+# lec	09/19/2023
+#	wts2-393/Disease to reference annotation (DOID)
 #
 # lec	09/06/2023
 #	wts2-1248/Bulk index associations (allele, marker, strain)
@@ -169,7 +172,7 @@ def verifyObject(
     select a._object_key, a._mgitype_key 
     from ACC_Accession  a, MRK_Marker aa
     where a._logicaldb_key = 1
-    and a._mgitype_key in (2) 
+    and a._mgitype_key = 2
     and a.preferred = 1 
     and a.accid = \'%s\'
     and a._object_key = aa._Marker_key
@@ -178,7 +181,7 @@ def verifyObject(
     select a._object_key, a._mgitype_key 
     from ACC_Accession a, PRB_Strain aa
     where a._logicaldb_key = 1
-    and a._mgitype_key in (10) 
+    and a._mgitype_key = 10 
     and a.preferred = 1 
     and a.accid = \'%s\'
     and a._object_key = aa._strain_key
@@ -187,12 +190,21 @@ def verifyObject(
     select a._object_key, a._mgitype_key 
     from ACC_Accession a, ALL_Allele aa
     where a._logicaldb_key = 1
-    and a._mgitype_key in (11) 
+    and a._mgitype_key = 11
     and a.preferred = 1 
     and a.accid = \'%s\'
     and a._object_key = aa._allele_key
     and aa._allele_status_key in (847114, 3983021)
-    ''' % (mgiid, mgiid, mgiid), 'auto')
+    union
+    select a._object_key, a._mgitype_key 
+    from ACC_Accession a, VOC_Term aa
+    where a._logicaldb_key = 191
+    and a._mgitype_key = 13
+    and a.preferred = 1 
+    and a.accid = \'%s\'
+    and a._object_key = aa._term_key
+    and aa.isobsolete = 0
+    ''' % (mgiid, mgiid, mgiid, mgiid), 'auto')
 
     if len(results) == 0:
             errorFile.write('Invalid Object (row %d): %s\n' % (lineNum, mgiid))
@@ -208,8 +220,10 @@ def verifyObject(
                 assocTypeKey = 1018
         elif mgitypeKey == 10:
                 assocTypeKey = 1031
-        else:
+        elif mgitypeKey == 11:
                 assocTypeKey = 1013
+        elif mgitypeKey == 13:
+                assocTypeKey = 1032
                         
     return objectKey, mgitypeKey, assocTypeKey
 
@@ -240,6 +254,7 @@ def processFile():
     errorFile.write('\tif Object = Allele, then must be Approved or Autoload\n')
     errorFile.write('\tif Object = Marker, then must be Official\n')
     errorFile.write('\tif Object = Strain, then must be Public\n')
+    errorFile.write('\tif Object = DOID, then must be non-obsolete term\n')
     errorFile.write('\n')
 
     # For each line in the input file
